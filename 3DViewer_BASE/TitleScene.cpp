@@ -18,6 +18,9 @@ void TitleScene::Init(void)
 
 	mUnit = new Unit(mSceneManager);
 	mUnit->Init();
+
+	auto camera = mSceneManager->GetCamera();
+	camera->SetTarget(mUnit);
 }
 
 void TitleScene::Update(void)

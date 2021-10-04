@@ -2,6 +2,7 @@
 #include <DxLib.h>
 
 class SceneManager;
+class RollBall;
 
 class Unit
 {
@@ -12,8 +13,13 @@ public:
 	void Draw();
 	void Release();
 
+	VECTOR GetPos()const;
+	VECTOR GetForward()const;
+
 private:
 	SceneManager* mSceneManager;
+	RollBall* mBall;
+
 	int mModelID;
 	int mAnimWalk;
 

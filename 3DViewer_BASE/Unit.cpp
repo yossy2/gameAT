@@ -1,6 +1,8 @@
 #include "Unit.h"
 #include "SceneManager.h"
 #include "Camera.h"
+#include "AsoUtility.h"
+#include "RollBall.h"
 
 namespace
 {
@@ -27,6 +29,9 @@ void Unit::Init()
 	MV1SetAttachAnimTime(mModelID, mAnimWalk, mStepAnim);
 
 	mAnimSpeed = 50.0f;
+
+	mBall = new RollBall(mSceneManager, this);
+	mBall->Init();
 }
 
 void Unit::Update()
@@ -43,7 +48,7 @@ void Unit::Update()
 	MV1SetAttachAnimTime(mModelID, mAnimWalk, mStepAnim);
 
 	Move();
-
+	mBall->Update();
 }
 
 void Unit::Draw()
@@ -52,11 +57,30 @@ void Unit::Draw()
 
 	DrawFormatString(0, 50, 0xffffff, "キャラ座標：(%.1f,%.1f,%.1f)", mPos.x, mPos.y, mPos.z);
 	DrawFormatString(0, 70, 0xffffff, "キャラ回転：(%.1f,%.1f,%.1f)", mAngles.x, mAngles.y, mAngles.z);
+
+	mBall->Draw();
 }
 
 void Unit::Release()
 {
 	MV1DeleteModel(mModelID);
+	mBall->Release();
+	delete mBall;
+}
+
+VECTOR Unit::GetPos() const
+{
+	return mPos;
+}
+
+VECTOR Unit::GetForward() const
+{
+	VECTOR ret;
+	VECTOR forward = { 0.0,0.0,-1.0f };
+
+	VectorRotationY(&ret, &forward, -mAngles.y);
+
+	return ret;
 }
 
 void Unit::Move()
@@ -111,7 +135,19 @@ void Unit::Move()
 	VECTOR normal,rot,scale,add;
 	VECTOR dir;
 
-	mAngles.y = atan2f(-move.z,move.x) - DX_PI_F / 2.0f;
+	// カメラの方向から移動方向を算出
+	VECTOR targetToCamera = camera->GetVecTargetToCamera();
+	targetToCamera.y = 0;
+	normal = targetToCamera;
+	VectorNormalize(&targetToCamera, &normal);
+	rot = targetToCamera;
+	VectorRotationY(&targetToCamera,&rot, atan2f(move.z, move.x) + DX_PI_F / 2.0f);
+	scale = targetToCamera;
+	VectorScale(&targetToCamera, &scale, moveSpeed * deltatime);
+	add = mPos;
+	VectorAdd(&mPos, &add, &targetToCamera);
+
+	/*mAngles.y = atan2f(-move.z,move.x) + DX_PI_F / 2.0f;
 
 	VectorNormalize(&normal, &move);
 	VectorRotationY(&rot, &normal, -angle.y);
@@ -119,10 +155,12 @@ void Unit::Move()
 
 	
 
-	VectorAdd(&add, &mPos, &scale);
+	VectorAdd(&add, &mPos, &scale);*/
 
-	mPos = add;
+	//mPos = targetToCamera;
 
 	MV1SetPosition(mModelID, mPos);
+
+	mAngles.y = atan2f(targetToCamera.z, -targetToCamera.x) + DX_PI_F / 2.0f;
 	MV1SetRotationXYZ(mModelID, mAngles);
 }
