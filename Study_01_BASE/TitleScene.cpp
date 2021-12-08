@@ -17,6 +17,7 @@ void TitleScene::Init(void)
 
 	mSpaceDome = new SpaceDome(mSceneManager);
 	mSpaceDome->Init();
+
 }
 
 void TitleScene::Update(void)

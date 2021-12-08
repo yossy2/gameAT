@@ -3,6 +3,7 @@
 #include "GameCommon.h"
 #include "SceneManager.h"
 #include "Camera.h"
+#include "Player.h"
 
 namespace
 {
@@ -45,6 +46,10 @@ void Camera::Update()
 	{
 		Rotate();
 		Move();
+	}
+	else if (mMode == CAMERA_MODE::CHASE)
+	{
+		Chase();
 	}
 }
 
@@ -99,8 +104,6 @@ void Camera::DrawUI(void)
 	DrawString(
 		SCREEN_SIZE_X - x, y, "　ゲームオーバー", 0xffffff);
 
-	auto degree = mQuaRot.ToEuler();
-	DrawFormatString(0,0,0xffffff,"%.1f : %.1f : %.1f",AsoUtility::Rad2DegF(degree.x), AsoUtility::Rad2DegF(degree.y), AsoUtility::Rad2DegF(degree.z));
 }
 
 void Camera::Release(void)
@@ -127,6 +130,21 @@ void Camera::ChangeMode(CAMERA_MODE mode)
 	mMode = mode;
 
 	SetDefault();
+}
+
+void Camera::SetPlayer(std::shared_ptr<Player> player)
+{
+	mPlayer_ = player;
+	mMode = CAMERA_MODE::CHASE;
+	// カメラの初期設定
+	mTargetPos = mPlayer_->GetTransform().pos;
+	mPos = VSub(mTargetPos, RELATIVE_TARGET_POS);
+	mCameraUp = { 0.0f, 1.0f, 0.0f };
+
+	// カメラはX軸に傾いているが、この傾いた状態を傾き無しとする
+	// mQuaRotは回転計算用で、
+	// あくまで軸となるのは、カメラ座標と注視点とする
+	mQuaRot = Quaternion();
 }
 
 void Camera::Move()
@@ -169,6 +187,26 @@ void Camera::Rotate()
 	mTargetPos = VAdd(mPos, mQuaRot.PosAxis(RELATIVE_TARGET_POS));
 	//mCameraUp = mQuaRot.PosAxis(AsoUtility::DIR_U);
 
+}
+
+void Camera::Chase()
+{
+	// カメラの初期設定
+	const auto& pTransform = mPlayer_->GetTransform();
+	mTargetPos = pTransform.pos;
+	auto offset = pTransform.quaRot.PosAxis(RELATIVE_TARGET_POS);
+
+	// 理想位置
+	VECTOR idealPos = VSub(mTargetPos, offset);
+	// 実際と理想の差
+	VECTOR diff = VSub(mPos, idealPos);
+	// 力 = -バネの強さ × バネの伸び - 抵抗 × カメラの速度
+	VECTOR force = VScale(diff, -10.0f);
+	force = VSub(force, VScale(mVelocity, 5.0f));
+	// 速度の更新
+	mVelocity = VAdd(mVelocity, VScale(force, mSceneManager->GetDeltaTime()));
+
+	mPos = VAdd(mTargetPos, mVelocity);
 }
 
 void Camera::SetBeforeDrawFree()

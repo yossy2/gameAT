@@ -30,7 +30,7 @@ public:
 
 	// 座標を回転させる
 	static VECTOR PosAxis(Quaternion q, VECTOR pos);
-	VECTOR PosAxis(VECTOR pos);
+	VECTOR PosAxis(VECTOR pos)const;
 
 	// クォータニオンからオイラー角へ変換
 	static VECTOR ToEuler(Quaternion q);

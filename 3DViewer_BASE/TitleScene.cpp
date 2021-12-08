@@ -7,6 +7,9 @@
 #include "SceneManager.h"
 #include "TitleScene.h"
 
+VERTEX3DSHADER Vert[6];
+int vs_, ps_,g_;
+
 TitleScene::TitleScene(SceneManager* manager) : SceneBase(manager)
 {
 }
@@ -21,6 +24,26 @@ void TitleScene::Init(void)
 
 	auto camera = mSceneManager->GetCamera();
 	camera->SetTarget(mUnit);
+
+	vs_ = LoadVertexShader("ShaderPolygon3DTestVS.vso");
+	ps_ = LoadPixelShader("ShaderPolygon3DTestPS.pso");
+
+	Vert[0].pos = VGet(100.0f, 356.0f, 0.0f);
+	Vert[1].pos = VGet(356.0f, 356.0f, 0.0f);
+	Vert[2].pos = VGet(100.0f, 100.0f, 0.0f);
+	Vert[3].pos = VGet(356.0f, 100.0f, 0.0f);
+	Vert[0].dif = GetColorU8(255, 255, 255, 255);
+	Vert[1].dif = GetColorU8(255, 255, 255, 255);
+	Vert[2].dif = GetColorU8(255, 255, 255, 255);
+	Vert[3].dif = GetColorU8(255, 255, 255, 255);
+	Vert[0].u = 0.0f; Vert[0].v = 0.0f;
+	Vert[1].u = 1.0f; Vert[1].v = 0.0f;
+	Vert[2].u = 0.0f; Vert[3].v = 1.0f;
+	Vert[3].u = 1.0f; Vert[2].v = 1.0f;
+	Vert[4] = Vert[2];
+	Vert[5] = Vert[1];
+
+	g_ = LoadGraph("icon.png");
 }
 
 void TitleScene::Update(void)
@@ -37,9 +60,16 @@ void TitleScene::Update(void)
 
 void TitleScene::Draw(void)
 {
-	mStage->Draw();
+	//mStage->Draw();
 	mUnit->Draw();
 	DrawDebug();
+
+	SetUseVertexShader(vs_);
+	SetUsePixelShader(ps_);
+	SetUseTextureToShader(0, g_);
+	//DrawPolygonIndexed3D(vertexes_.data(), vertexes_.size(), indexes_.data(), vertexes_.size() - 2, DX_NONE_GRAPH, TRUE);
+	//DrawPolygonIndexed3DToShader(vertexes_.data(), vertexes_.size(), indexes_.data(), vertexes_.size() - 2);
+	DrawPolygon3DToShader(Vert, 2);
 }
 
 void TitleScene::DrawDebug(void)

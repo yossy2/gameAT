@@ -148,7 +148,7 @@ VECTOR Quaternion::PosAxis(Quaternion q, VECTOR pos)
     return { (float)tmp.x, (float)tmp.y, (float)tmp.z };
 }
 
-VECTOR Quaternion::PosAxis(VECTOR pos)
+VECTOR Quaternion::PosAxis(VECTOR pos)const
 {
     return PosAxis(Quaternion(w, x, y, z), pos);
 }

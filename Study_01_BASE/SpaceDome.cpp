@@ -1,5 +1,6 @@
 #include "SpaceDome.h"
 #include "AsoUtility.h"
+#include "Player.h"
 
 SpaceDome::SpaceDome(SceneManager* manager)
 {
@@ -20,6 +21,9 @@ void SpaceDome::Init(void)
 
 void SpaceDome::Update(void)
 {
+	if (mPlayer.expired()) return;
+	mTransform.pos = mPlayer.lock()->GetTransform().pos;
+	mTransform.Update();
 }
 
 void SpaceDome::Draw(void)
@@ -30,4 +34,9 @@ void SpaceDome::Draw(void)
 void SpaceDome::Release(void)
 {
 	MV1DeleteModel(mTransform.modelId);
+}
+
+void SpaceDome::SetPlayer(std::shared_ptr<Player> player)
+{
+	mPlayer = player;
 }
