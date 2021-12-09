@@ -9,6 +9,14 @@
 #include "SpaceDome.h"
 #include "Stage.h"
 #include "Player.h"
+#include "DebriManager.h"
+#include "Dangeon.h"
+#include "BossShip.h"
+
+namespace
+{
+	
+}
 
 GameScene::GameScene(SceneManager* manager) : SceneBase(manager)
 {
@@ -26,6 +34,10 @@ void GameScene::Init(void)
 
 	mSceneManager->GetCamera()->SetPlayer(mPlayer);
 	mSpaceDome->SetPlayer(mPlayer);
+	mDebriManager = std::make_shared<DebriManager>();
+	mDebriManager->MakeDebri(mPlayer->GetTransform().pos);
+	dangeon_ = std::make_shared<Dangeon>();
+	bossShip_ = std::make_shared<BossShip>();
 }
 
 void GameScene::Update(void)
@@ -39,6 +51,8 @@ void GameScene::Update(void)
 		mSceneManager->ChangeScene(SceneManager::SCENE_ID::EVENT, true);
 	}
 
+	// ƒfƒuƒŠ¶¬
+	mDebriManager->MakeDebri(mPlayer->GetTransform().pos);
 }
 
 void GameScene::Draw(void)
@@ -46,6 +60,9 @@ void GameScene::Draw(void)
 	mSpaceDome->Draw();
 	mStage->Draw();
 	mPlayer->Draw();
+	dangeon_->Draw();
+	bossShip_->Draw();
+	mDebriManager->Draw(mPlayer->GetTransform().pos);
 }
 
 void GameScene::Release(void)

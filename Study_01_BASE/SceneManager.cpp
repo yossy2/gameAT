@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "TimeCount.h"
 
 void SceneManager::Init()
 {
@@ -85,6 +86,8 @@ void SceneManager::Update(void)
 	auto tickCount = std::chrono::system_clock::now();
 	mDeltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(tickCount - mTickCount).count() / 1000000000.0f;
 	mTickCount = tickCount;
+
+	TimeCount::Update();
 
 	mFader->Update();
 	if (mIsSceneChanging)

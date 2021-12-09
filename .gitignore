@@ -6,3 +6,12 @@
 /Study_01_BASE/BaseProject.vcxproj.user
 /Study_01_BASE/Log.txt
 /Study_01_BASE/.vs
+/3DViewer_BASE/ShaderCompiler.exe
+/3DViewer_BASE/ShaderPolygon3DTestPS.hlsl
+/3DViewer_BASE/ShaderPolygon3DTestPS.pso
+/3DViewer_BASE/ShaderPolygon3DTestVS.hlsl
+/3DViewer_BASE/ShaderPolygon3DTestVS.vso
+/3DViewer_BASE/ShaderPolygon3DTest_ShaderCompile.bat
+/3DViewer_BASE/TestPS.hlsl
+/3DViewer_BASE/TestPS.pso
+/3DViewer_BASE/icon.png

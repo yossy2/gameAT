@@ -154,9 +154,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BattleScene.cpp" />
+    <ClCompile Include="BossShip.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Dangeon.cpp" />
     <ClCompile Include="DebriManager.cpp" />
+    <ClCompile Include="Effect2D.cpp" />
+    <ClCompile Include="EventScene.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RandomEngine.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Fader.cpp" />
@@ -172,6 +178,7 @@
     <ClCompile Include="SpaceDebri.cpp" />
     <ClCompile Include="SpaceDome.cpp" />
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="TimeCount.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
@@ -179,9 +186,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="BattleScene.h" />
+    <ClInclude Include="BossShip.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Dangeon.h" />
     <ClInclude Include="DebriManager.h" />
+    <ClInclude Include="Effect2D.h" />
+    <ClInclude Include="EventScene.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RandomEngine.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Fader.h" />
@@ -197,6 +210,7 @@
     <ClInclude Include="SpaceDebri.h" />
     <ClInclude Include="SpaceDome.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="TimeCount.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />

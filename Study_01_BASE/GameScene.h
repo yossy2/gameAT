@@ -7,6 +7,9 @@ class SceneManager;
 class SpaceDome;
 class Stage;
 class Player;
+class DebriManager;
+class Dangeon;
+class BossShip;
 
 class GameScene : public SceneBase
 {
@@ -25,5 +28,7 @@ private:
 	Stage* mStage;
 
 	std::shared_ptr<Player> mPlayer;
-
+	std::shared_ptr<DebriManager> mDebriManager;
+	std::shared_ptr<Dangeon> dangeon_;
+	std::shared_ptr<BossShip> bossShip_;
 };
