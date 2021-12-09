@@ -10,6 +10,7 @@ class Player;
 class DebriManager;
 class Dangeon;
 class BossShip;
+class BulletManager;
 
 class GameScene : public SceneBase
 {
@@ -29,6 +30,7 @@ private:
 
 	std::shared_ptr<Player> mPlayer;
 	std::shared_ptr<DebriManager> mDebriManager;
+	std::shared_ptr<BulletManager> mBulletManager;
 	std::shared_ptr<Dangeon> dangeon_;
 	std::shared_ptr<BossShip> bossShip_;
 };

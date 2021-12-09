@@ -1,5 +1,14 @@
 #pragma once
 #include "SceneBase.h"
+#include <memory>
+
+class SceneManager;
+class SpaceDome;
+class Player;
+class DebriManager;
+class BossShip;
+class BulletManager;
+
 class BattleScene :
     public SceneBase
 {
@@ -12,5 +21,11 @@ public:
 	void Release(void) override;
 
 private:
+	SpaceDome* mSpaceDome;
+
+	std::shared_ptr<Player> mPlayer;
+	std::shared_ptr<DebriManager> mDebriManager;
+	std::shared_ptr<BulletManager> mBulletManager;
+	std::shared_ptr<BossShip> bossShip_;
 };
 

@@ -3,6 +3,8 @@
 #include "Fader.h"
 #include "TitleScene.h"
 #include "GameScene.h"
+#include "EventScene.h"
+#include "BattleScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -145,6 +147,9 @@ void SceneManager::Update(void)
 		// UI•`‰æ
 		mCamera->DrawUI();
 		break;
+
+	case SCENE_ID::EVENT:
+		break;
 	}
 
 	mFader->Draw();
@@ -228,8 +233,10 @@ void SceneManager::DoChangeScene(void)
 		mScene = new GameScene(this);
 		break;
 	case SCENE_ID::EVENT:
+		mScene = new EventScene(this);
 		break;
 	case SCENE_ID::BATTLE:
+		mScene = new BattleScene(this);
 		break;
 	default:
 		break;

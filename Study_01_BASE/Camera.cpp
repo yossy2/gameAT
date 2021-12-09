@@ -129,6 +129,20 @@ void Camera::ChangeMode(CAMERA_MODE mode)
 {
 	mMode = mode;
 
+	if (mode == CAMERA_MODE::FIXED)
+	{
+		// カメラの初期設定
+		mPos = VGet(-2000.0f,2000.0f,2000.0f);
+		mTargetPos = VGet(0,0,0);
+		mCameraUp = { 0.0f, 1.0f, 0.0f };
+
+		// カメラはX軸に傾いているが、この傾いた状態を傾き無しとする
+		// mQuaRotは回転計算用で、
+		// あくまで軸となるのは、カメラ座標と注視点とする
+		mQuaRot = Quaternion();
+		return;
+	}
+
 	SetDefault();
 }
 

@@ -7,6 +7,10 @@ SpaceDome::SpaceDome(SceneManager* manager)
 	
 }
 
+SpaceDome::~SpaceDome()
+{
+}
+
 void SpaceDome::Init(void)
 {
 	mTransform.SetModel(MV1LoadModel("Model/SkyDome/SkyDome.mv1"));

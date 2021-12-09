@@ -12,6 +12,7 @@
 #include "DebriManager.h"
 #include "Dangeon.h"
 #include "BossShip.h"
+#include "BulletManager.h"
 
 namespace
 {
@@ -29,24 +30,36 @@ void GameScene::Init(void)
 
 	mStage = new Stage(mSceneManager);
 	mStage->Init();
-
-	mPlayer = std::make_shared<Player>(mSceneManager);
+	mBulletManager = std::make_shared<BulletManager>();
+	mPlayer = std::make_shared<Player>(mSceneManager, *mBulletManager);
 
 	mSceneManager->GetCamera()->SetPlayer(mPlayer);
 	mSpaceDome->SetPlayer(mPlayer);
 	mDebriManager = std::make_shared<DebriManager>();
 	mDebriManager->MakeDebri(mPlayer->GetTransform().pos);
 	dangeon_ = std::make_shared<Dangeon>();
-	bossShip_ = std::make_shared<BossShip>();
+	bossShip_ = std::make_shared<BossShip>(VGet(3000,0,3000),*mBulletManager);
 }
 
 void GameScene::Update(void)
 {
 	mPlayer->Update();
 	mSpaceDome->Update();
+	mBulletManager->Update();
+	
+
+	bossShip_->Update();
+
+	if (dangeon_->CollisionCheck(mPlayer))
+	{
+		mSceneManager->ChangeScene(SceneManager::SCENE_ID::GAME, true);
+		return;
+	}
 
 	// ƒV[ƒ“‘JˆÚ
-	if (keyTrgDown[KEY_SYS_START])
+	auto& p = mPlayer->GetTransform();
+	auto& b = bossShip_->GetTransform();
+	if (VSquareSize(VSub(p.pos,b.pos)) < 2500.0f * 2500.0f)
 	{
 		mSceneManager->ChangeScene(SceneManager::SCENE_ID::EVENT, true);
 	}
@@ -60,6 +73,7 @@ void GameScene::Draw(void)
 	mSpaceDome->Draw();
 	mStage->Draw();
 	mPlayer->Draw();
+	mBulletManager->Draw();
 	dangeon_->Draw();
 	bossShip_->Draw();
 	mDebriManager->Draw(mPlayer->GetTransform().pos);

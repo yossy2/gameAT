@@ -64,4 +64,5 @@ void TitleScene::Release(void)
 	mSpaceDome->Release();
 	DeleteGraph(mImgStartLogo);
 
+	delete mSpaceDome;
 }
