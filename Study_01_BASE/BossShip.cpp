@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "BulletManager.h"
 #include "Bullet.h"
+#include "Effect2D.h"
 
 namespace
 {
@@ -44,6 +45,9 @@ BossShip::BossShip(const VECTOR& pos, BulletManager& bulletManager):bulletManage
 
 	turret = std::make_shared<Turret>(VGet(-3.5f, 5.0f, -17.8f), VGet(0, AsoUtility::Deg2RadF(180.0f), AsoUtility::Deg2RadF(-18.0f)), battery_, barrel_, mTransform);
 	turret_.emplace_back(turret);
+
+	particle_.resize(7);
+	LoadDivGraph("Image/ShipExplosion.png", 7, 7, 1, 120, 120, particle_.data());
 }
 
 BossShip::~BossShip()
@@ -110,6 +114,10 @@ void BossShip::Update()
 			if (t->CollCheck(start, end, radius))
 			{
 				b->Hit();
+
+				auto p = std::make_shared<Effect2D>(-1, 0.5f, 600.0f, t->GetTransform().pos);
+				p->SetImage(particle_);
+				particles_.emplace_back(p);
 				break;
 			}
 		}
@@ -129,6 +137,16 @@ void BossShip::Update()
 		}
 		attackInterval_ = 2.0f;
 	}
+
+	// パーティクル削除
+	for (auto p : particles_)
+	{
+		p->Update();
+	}
+	particles_.erase(std::remove_if(particles_.begin(), particles_.end(),
+		[](std::shared_ptr<Effect2D> p) {return p->IsDeletable(); }), particles_.end());
+
+	
 }
 
 void BossShip::Draw()
@@ -137,6 +155,11 @@ void BossShip::Draw()
 	for (auto t : turret_)
 	{
 		t->Draw();
+	}
+
+	for (auto p : particles_)
+	{
+		p->Draw();
 	}
 }
 

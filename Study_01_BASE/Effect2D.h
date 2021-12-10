@@ -1,12 +1,14 @@
 #pragma once
 #include <DxLib.h>
+#include <vector>
 
 class Effect2D
 {
 private:
-	int image_;
+	std::vector<int> image_;
 	float aliveTime_;
 	float size_;
+	float animTime_;
 	VECTOR pos_;
 
 	bool isDeletable_ = false;
@@ -15,6 +17,7 @@ public:
 	void Update();
 	void Draw();
 
+	void SetImage(const std::vector<int>& image);
 	bool IsDeletable()const;
 };
 

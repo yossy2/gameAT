@@ -31,7 +31,7 @@ void Player::Rotate()
 
 	angle = VGet(AsoUtility::Deg2RadF(angle.x * rotate), AsoUtility::Deg2RadF(angle.y * rotate), 0);
 	auto degree = mTransform.quaRot.ToEuler();
-	auto x = min(AsoUtility::Deg2RadF(76.0f), max(-AsoUtility::Deg2RadF(76.0f), angle.x + degree.x));
+	auto x = min(AsoUtility::Deg2RadF(70.0f), max(-AsoUtility::Deg2RadF(70.0f), angle.x + degree.x));
 	mTransform.quaRot = Quaternion::Euler(VGet(x, angle.y + degree.y, 0));
 }
 
@@ -48,6 +48,9 @@ Player::Player(SceneManager* sceneManager, BulletManager& bulletManager):mSceneM
 
 	particle = LoadGraph("Image/Light.png");
 	particles_.reserve(50);
+
+	explosion_.resize(7);
+	LoadDivGraph("Image/ShipExplosion.png", 7, 7, 1, 120, 120, explosion_.data());
 }
 
 Player::~Player()
@@ -56,6 +59,18 @@ Player::~Player()
 
 void Player::Update()
 {
+	if (isDead_)
+	{
+		//パーティクル削除
+		for (auto p : particles_)
+		{
+			p->Update();
+		}
+		particles_.erase(std::remove_if(particles_.begin(), particles_.end(),
+			[](std::shared_ptr<Effect2D> p) {return p->IsDeletable(); }), particles_.end());
+		return;
+	}
+
 	Rotate();
 	mTransform.pos = VAdd(mTransform.pos, VScale(mTransform.GetForward(), move_speed * TimeCount::GetDeltaTime()));
 	mTransform.Update();
@@ -94,12 +109,24 @@ void Player::Update()
 
 void Player::Draw()
 {
+	if (isDead_)
+	{
+		for (auto p : particles_)
+		{
+			p->Draw();
+		}
+		return;
+	}
+
 	MV1DrawModel(mTransform.modelId);
 	
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
 	for (auto p : particles_)
 	{
 		p->Draw();
 	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
 	//auto degree = mTransform.quaRot.ToEuler();
 	////DrawFormatString(0, 0, 0xffffff, "%.1f : %.1f : %.1f", AsoUtility::Rad2DegF(degree.x), AsoUtility::Rad2DegF(degree.y), AsoUtility::Rad2DegF(degree.z));
 	//DrawFormatString(0, 0, 0xffffff, "%.1f : %.1f : %.1f", mTransform.pos.x, mTransform.pos.y, mTransform.pos.z);
@@ -115,7 +142,16 @@ const Transform& Player::GetTransform() const
 
 void Player::GetCapsule(VECTOR& start, VECTOR& end, float& radius)
 {
-	start = VAdd(mTransform.pos, VScale(mTransform.GetBack(), 100.0f));
-	end = VAdd(start, VScale(mTransform.GetForward(), 200.0f));
+	start = VAdd(mTransform.pos, VScale(mTransform.GetBack(), 80.0f));
+	end = VAdd(start, VScale(mTransform.GetForward(), 160.0f));
 	radius = 60.0f;
+}
+
+void Player::Dead()
+{
+	auto p = std::make_shared<Effect2D>(-1, 0.49f, 600.0f, mTransform.pos);
+	p->SetImage(explosion_);
+	particles_.clear();
+	particles_.emplace_back(p);
+	isDead_ = true;
 }

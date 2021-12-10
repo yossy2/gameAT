@@ -13,6 +13,7 @@
 #include "Dangeon.h"
 #include "BossShip.h"
 #include "BulletManager.h"
+#include "TimeCount.h"
 
 namespace
 {
@@ -47,12 +48,23 @@ void GameScene::Update(void)
 	mSpaceDome->Update();
 	mBulletManager->Update();
 	
-
 	bossShip_->Update();
+
+	if (restartCnt > 0)
+	{
+		restartCnt -= TimeCount::GetDeltaTime();
+
+		if (restartCnt <= 0)
+		{
+			mSceneManager->ChangeScene(SceneManager::SCENE_ID::GAME, true);
+		}
+		return;
+	}
 
 	if (dangeon_->CollisionCheck(mPlayer))
 	{
-		mSceneManager->ChangeScene(SceneManager::SCENE_ID::GAME, true);
+		mPlayer->Dead();
+		restartCnt = 2.0f;
 		return;
 	}
 
@@ -72,11 +84,11 @@ void GameScene::Draw(void)
 {
 	mSpaceDome->Draw();
 	mStage->Draw();
-	mPlayer->Draw();
 	mBulletManager->Draw();
 	dangeon_->Draw();
 	bossShip_->Draw();
 	mDebriManager->Draw(mPlayer->GetTransform().pos);
+	mPlayer->Draw();
 }
 
 void GameScene::Release(void)

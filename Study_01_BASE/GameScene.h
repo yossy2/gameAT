@@ -33,4 +33,6 @@ private:
 	std::shared_ptr<BulletManager> mBulletManager;
 	std::shared_ptr<Dangeon> dangeon_;
 	std::shared_ptr<BossShip> bossShip_;
+
+	float restartCnt = 0;
 };

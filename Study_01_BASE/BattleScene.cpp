@@ -7,7 +7,7 @@
 #include "DebriManager.h"
 #include "BossShip.h"
 #include "BulletManager.h"
-
+#include "TimeCount.h"
 BattleScene::BattleScene(SceneManager* manager):SceneBase(manager)
 {
 }
@@ -31,13 +31,26 @@ void BattleScene::Update(void)
 	mPlayer->Update();
 	mSpaceDome->Update();
 	bossShip_->Update();
-	if (bossShip_->CollisionCheck(mPlayer))
+	mBulletManager->Update();
+
+	if (restartCnt > 0)
 	{
-		mSceneManager->ChangeScene(SceneManager::SCENE_ID::BATTLE, true);
+		restartCnt -= TimeCount::GetDeltaTime();
+
+		if (restartCnt <= 0)
+		{
+			mSceneManager->ChangeScene(SceneManager::SCENE_ID::BATTLE, true);
+		}
 		return;
 	}
 
-	mBulletManager->Update();
+	if (bossShip_->CollisionCheck(mPlayer))
+	{
+		mPlayer->Dead();
+		restartCnt = 2.0f;
+		return;
+	}
+
 
 	// ƒfƒuƒŠ¶¬
 	mDebriManager->MakeDebri(mPlayer->GetTransform().pos);
@@ -46,11 +59,11 @@ void BattleScene::Update(void)
 void BattleScene::Draw(void)
 {
 	mSpaceDome->Draw();
-	mPlayer->Draw();
 	mBulletManager->Draw();
 
 	bossShip_->Draw();
 	mDebriManager->Draw(mPlayer->GetTransform().pos);
+	mPlayer->Draw();
 }
 
 void BattleScene::Release(void)

@@ -19,6 +19,8 @@ private:
 
 	float particleCnt = 0;
 	float attackInterval_ = 0;
+	std::vector<int> explosion_;
+	bool isDead_ = false;
 	void Rotate();
 public:
 	Player(SceneManager* sceneManager,BulletManager& bulletManager);
@@ -28,5 +30,7 @@ public:
 
 	const Transform& GetTransform()const;
 	void GetCapsule(VECTOR& start, VECTOR& end, float& radius);
+
+	void Dead();
 };
 
